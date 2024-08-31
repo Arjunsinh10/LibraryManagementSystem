@@ -1,3 +1,5 @@
+package org.example;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -25,10 +27,10 @@ public class Library {
             if (!book.isBorrowed()) {
                 book.setBorrowed(true);
             } else {
-                throw new IllegalArgumentException("Book not available");
+                throw new IllegalArgumentException("Book already borrowed");
             }
         } else {
-            throw new IllegalArgumentException("Book not available");
+            throw new IllegalArgumentException("Book already borrowed");
         }
     }
 
