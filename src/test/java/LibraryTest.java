@@ -1,9 +1,11 @@
+
+import org.example.Book;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions .*;
 
-public class LibraryTest {
+
     public class LibraryTest {
 
         private Library library;
@@ -92,5 +94,45 @@ public class LibraryTest {
             assertEquals("Book was not borrowed", exception.getMessage(), "Exception message should be 'Book was not borrowed'.");
         }
 
+        @Test
+        public void testViewAvailableBooks() {
+            librarian.addBook(library, book);
+            assertEquals(1, library.viewAvailableBooks().size(), "The library should have 1 available book.");
+            assertTrue(library.viewAvailableBooks().contains(book), "The available book list should contain the book.");
+        }
+
+        @Test
+        public void testViewAvailableBooksAfterBorrowing() {
+            librarian.addBook(library, book);
+            library.borrowBook("1234567890");
+            assertEquals(0, library.viewAvailableBooks().size(), "The library should have no available books after borrowing the only book.");
+        }
+
+        @Test
+        public void testBookAttributes() {
+            assertEquals("1234567890", book.getIsbn(), "The ISBN should match the input value.");
+            assertEquals("1984", book.getTitle(), "The title should match the input value.");
+            assertEquals("George Orwell", book.getAuthor(), "The author should match the input value.");
+            assertEquals(1949, book.getPublicationYear(), "The publication year should match the input value.");
+        }
+
+        @Test
+        public void testBookBorrowedStatusInitially() {
+            assertFalse(book.isBorrowed(), "The book should not be marked as borrowed initially.");
+        }
+
+        @Test
+        public void testLibraryIsEmptyInitially() {
+            Library newLibrary = new Library();
+            assertTrue(newLibrary.getBooks().isEmpty(), "A new library should be empty.");
+        }
+
+        @Test
+        public void testLibraryContainsBookAfterAdding() {
+            librarian.addBook(library, book);
+            assertTrue(library.getBooks().containsValue(book), "The library should contain the book after adding it.");
+        }
     }
-}
+
+
+
