@@ -1,10 +1,9 @@
-public class LibraryTest {
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions .*;
 
+public class LibraryTest {
     public class LibraryTest {
 
         private Library library;
@@ -26,4 +25,72 @@ import static org.junit.jupiter.api.Assertions.*;
             assertEquals(1, library.getBooks().size(), "Library should contain 1 book after adding a book by librarian.");
             assertTrue(library.getBooks().containsValue(book), "The library should contain the book added by librarian.");
         }
+
+
+        @Test
+        public void testUserCanAddBook() {
+            user.addBook(library, book);
+            assertEquals(1, library.getBooks().size(), "Library should contain 1 book after adding a book by user.");
+            assertTrue(library.getBooks().containsValue(book), "The library should contain the book added by user.");
+        }
+
+        @Test
+        public void testAddDuplicateBook() {
+            librarian.addBook(library, book);
+            Book duplicateBook = new Book("1234567890", "1984", "George Orwell", 1949);
+            librarian.addBook(library, duplicateBook);
+            assertEquals(1, library.getBooks().size(), "Library should still contain 1 book after attempting to add a duplicate.");
+        }
+
+        @Test
+        public void testBorrowBook() {
+            librarian.addBook(library, book);
+            library.borrowBook("1234567890");
+            assertTrue(book.isBorrowed(), "The book should be marked as borrowed.");
+        }
+
+        @Test
+        public void testBorrowNonexistentBook() {
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                library.borrowBook("1111111111");
+            });
+            assertEquals("Book not available", exception.getMessage(), "Exception message should be 'Book not available'.");
+        }
+
+        @Test
+        public void testBorrowAlreadyBorrowedBook() {
+            librarian.addBook(library, book);
+            library.borrowBook("1234567890");
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                library.borrowBook("1234567890");
+            });
+            assertEquals("Book not available", exception.getMessage(), "Exception message should be 'Book not available' for already borrowed book.");
+        }
+
+        @Test
+        public void testReturnBook() {
+            librarian.addBook(library, book);
+            library.borrowBook("1234567890");
+            library.returnBook("1234567890");
+            assertFalse(book.isBorrowed(), "The book should be marked as not borrowed after return.");
+        }
+
+        @Test
+        public void testReturnNonexistentBook() {
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                library.returnBook("1111111111");
+            });
+            assertEquals("Book not found", exception.getMessage(), "Exception message should be 'Book not found' for non-existent book.");
+        }
+
+        @Test
+        public void testReturnBookThatWasNotBorrowed() {
+            librarian.addBook(library, book);
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                library.returnBook("1234567890");
+            });
+            assertEquals("Book was not borrowed", exception.getMessage(), "Exception message should be 'Book was not borrowed'.");
+        }
+
+    }
 }
